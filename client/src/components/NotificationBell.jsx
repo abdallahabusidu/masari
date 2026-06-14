@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { apiGet, apiPatch, apiDelete } from "../lib/api.js";
 
 function timeAgo(date) {
@@ -13,6 +14,7 @@ function timeAgo(date) {
 
 export default function NotificationBell() {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const [open, setOpen] = useState(false);
   const [items, setItems] = useState([]);
   const [unread, setUnread] = useState(0);
@@ -50,7 +52,7 @@ export default function NotificationBell() {
 
   return (
     <div className="notif-wrap" ref={ref}>
-      <button className="round-icon notif-btn" title="الإشعارات" onClick={() => { setOpen((o) => !o); load(); }}>
+      <button className="round-icon notif-btn" title={t("notif.title")} onClick={() => { setOpen((o) => !o); load(); }}>
         🔔
         {unread > 0 && <span className="notif-badge">{unread > 9 ? "9+" : unread}</span>}
       </button>
@@ -58,14 +60,14 @@ export default function NotificationBell() {
       {open && (
         <div className="notif-panel">
           <div className="notif-head">
-            <strong>الإشعارات</strong>
+            <strong>{t("notif.title")}</strong>
             <div className="notif-head-actions">
-              <button onClick={load} title="تحديث">⟳</button>
-              {unread > 0 && <button onClick={markAll}>تعليم الكل كمقروء</button>}
+              <button onClick={load} title={t("timeline.refresh")}>⟳</button>
+              {unread > 0 && <button onClick={markAll}>{t("notif.markAll")}</button>}
             </div>
           </div>
           {items.length === 0 ? (
-            <p className="notif-empty">لا توجد إشعارات</p>
+            <p className="notif-empty">{t("notif.empty")}</p>
           ) : (
             <ul className="notif-list">
               {items.map((n) => (

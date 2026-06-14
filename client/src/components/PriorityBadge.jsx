@@ -1,5 +1,7 @@
-import { priorityClass, priorityText } from "../lib/ui.js";
+import { useTranslation } from "react-i18next";
+import { priorityClass } from "../lib/ui.js";
 
 export default function PriorityBadge({ priority }) {
-  return <span className={`priority-badge ${priorityClass(priority)}`}>{priorityText(priority)}</span>;
+  const { t } = useTranslation();
+  return <span className={`priority-badge ${priorityClass(priority)}`}>{t(`priority.${priority}`)}</span>;
 }

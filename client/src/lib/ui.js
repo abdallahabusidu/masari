@@ -26,7 +26,8 @@ export function statusText(status) {
 
 export function formatDate(value) {
   if (!value) return "";
-  return new Date(value).toLocaleDateString("ar-EG", { year: "numeric", month: "long", day: "numeric" });
+  const locale = (localStorage.getItem("masari_lang") || "ar") === "ar" ? "ar-EG" : "en-GB";
+  return new Date(value).toLocaleDateString(locale, { year: "numeric", month: "long", day: "numeric" });
 }
 
 export function daysUntil(value) {

@@ -12,8 +12,23 @@ import { notFoundHandler, errorHandler } from "./middleware/error.middleware.js"
 export function createApp() {
   const app = express();
 
+  // Render/Vercel/Heroku sit behind a reverse proxy. Trust the first proxy hop so
+  // express-rate-limit can read the real client IP from X-Forwarded-For.
+  app.set("trust proxy", 1);
+
+  // CLIENT_ORIGIN may be a comma-separated list (e.g. localhost + Vercel domain).
+  const allowedOrigins = env.clientOrigin.split(",").map((s) => s.trim()).filter(Boolean);
   app.use(helmet());
-  app.use(cors({ origin: env.clientOrigin, credentials: true }));
+  app.use(
+    cors({
+      origin(origin, cb) {
+        // allow same-origin/non-browser (no Origin header) and any whitelisted origin
+        if (!origin || allowedOrigins.includes(origin)) return cb(null, true);
+        cb(new Error(`Origin ${origin} not allowed by CORS`));
+      },
+      credentials: true,
+    })
+  );
   app.use(express.json({ limit: "1mb" }));
   app.use(mongoSanitize());
   if (!env.isTest) app.use(morgan("dev"));

@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import DashboardChrome from "../components/DashboardChrome.jsx";
 import { contentApi, RESOURCE_CATEGORIES } from "../lib/content.js";
 
@@ -9,6 +10,7 @@ const ICON = { lectures: "🎓", recorded: "🎬", materials: "📄", books: "�
 export default function Resources() {
   const [params] = useSearchParams();
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const levelId = params.get("level");
 
   const [levels, setLevels] = useState([]);
@@ -37,12 +39,11 @@ export default function Resources() {
     }
   }, [selected]);
 
-  // ---- level picker (no level chosen) ----
   if (!levelId) {
     return (
       <DashboardChrome activeTab="resources">
         <section className="resources-panel">
-          <h2>اختر المستوى الدراسي</h2>
+          <h2>{t("resources.chooseLevel")}</h2>
           <div className="level-grid" style={{ width: "100%" }}>
             {levels.map((lvl) => (
               <button key={lvl.id} className="level-card" onClick={() => navigate(`/resources?level=${lvl.id}`)}>
@@ -50,7 +51,7 @@ export default function Resources() {
                 <strong>{lvl.name}</strong>
               </button>
             ))}
-            {levels.length === 0 && <p className="res-empty">لا توجد مستويات بعد</p>}
+            {levels.length === 0 && <p className="res-empty">{t("resources.noLevels")}</p>}
           </div>
         </section>
       </DashboardChrome>
@@ -67,9 +68,7 @@ export default function Resources() {
         <span className="rc-title">{r.title}</span>
       </div>
       {r.description && <p className="rc-desc">{r.description}</p>}
-      {r.url && (
-        <a className="rc-open" href={r.url} target="_blank" rel="noreferrer">فتح المصدر ↗</a>
-      )}
+      {r.url && <a className="rc-open" href={r.url} target="_blank" rel="noreferrer">{t("resources.openRes")}</a>}
     </div>
   );
 
@@ -77,51 +76,45 @@ export default function Resources() {
     <DashboardChrome activeTab="resources">
       <section className="resources-panel">
         <div className="res-layout">
-          {/* subjects rail */}
           <aside className="subjects-rail">
-            <h3>المواد التعليمية</h3>
+            <h3>{t("resources.materials")}</h3>
             {subjects.length === 0 ? (
-              <p className="res-empty">لا توجد مواد بعد</p>
+              <p className="res-empty">{t("resources.noSubjects")}</p>
             ) : (
               subjects.map((s) => (
-                <button
-                  key={s.id}
-                  className={`subject-pill ${selected?.id === s.id ? "active" : ""}`}
-                  onClick={() => setSelected(s)}
-                >
+                <button key={s.id} className={`subject-pill ${selected?.id === s.id ? "active" : ""}`} onClick={() => setSelected(s)}>
                   <span className="sp-icon">📖</span> {s.name}
                 </button>
               ))
             )}
           </aside>
 
-          {/* resources */}
           <div className="res-main">
-            <h2>{selected ? selected.name : "المصادر"}</h2>
-            <p className="res-sub">جميع المصادر التعليمية لهذه المادة</p>
+            <h2>{selected ? selected.name : t("tabs.resources")}</h2>
+            <p className="res-sub">{t("resources.subjectMaterials")}</p>
 
             {selected && (
               <div className="res-cats">
                 <button className={`res-cat-tab ${cat === ALL ? "active" : ""}`} onClick={() => setCat(ALL)}>
-                  عرض كل المصادر <span className="count">{resources.length}</span>
+                  {t("resources.all")} <span className="count">{resources.length}</span>
                 </button>
                 {RESOURCE_CATEGORIES.map((c) => (
                   <button key={c.key} className={`res-cat-tab ${cat === c.key ? "active" : ""}`} onClick={() => setCat(c.key)}>
-                    {ICON[c.key]} {c.label} <span className="count">{countFor(c.key)}</span>
+                    {ICON[c.key]} {t(`cat.${c.key}`)} <span className="count">{countFor(c.key)}</span>
                   </button>
                 ))}
               </div>
             )}
 
             {!selected ? null : resources.length === 0 ? (
-              <p className="res-empty">لا توجد مصادر لهذه المادة بعد</p>
+              <p className="res-empty">{t("resources.noRes")}</p>
             ) : (
               visibleCats.map((c) => {
                 const items = resources.filter((r) => r.category === c.key);
                 if (items.length === 0) return null;
                 return (
                   <div className="res-section" key={c.key}>
-                    <h3 className="res-section-head">{ICON[c.key]} {c.label}</h3>
+                    <h3 className="res-section-head">{ICON[c.key]} {t(`cat.${c.key}`)}</h3>
                     <div className="res-cards">{items.map(ResourceCard)}</div>
                   </div>
                 );
@@ -129,7 +122,7 @@ export default function Resources() {
             )}
 
             {selected && resources.length > 0 && visibleCats.every((c) => countFor(c.key) === 0) && (
-              <p className="res-empty">لا توجد مصادر في هذا القسم</p>
+              <p className="res-empty">{t("resources.noResSection")}</p>
             )}
           </div>
         </div>

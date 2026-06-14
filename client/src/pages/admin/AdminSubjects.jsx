@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import AdminGate from "./AdminGate.jsx";
 import AdminShell from "./AdminShell.jsx";
 import { contentApi } from "../../lib/content.js";
@@ -7,6 +8,7 @@ import { contentApi } from "../../lib/content.js";
 function Subjects() {
   const { levelId } = useParams();
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const [subjects, setSubjects] = useState([]);
   const [name, setName] = useState("");
 
@@ -21,11 +23,11 @@ function Subjects() {
     load();
   };
   const edit = async (s) => {
-    const v = prompt("اسم المادة", s.name);
+    const v = prompt(t("admin.titleBtn"), s.name);
     if (v && v !== s.name) { await contentApi.updateSubject(s.id, { name: v }); load(); }
   };
   const del = async (s) => {
-    if (!confirm(`حذف مادة "${s.name}" وكل مصادرها؟`)) return;
+    if (!confirm(`${t("common.delete")} "${s.name}"؟`)) return;
     await contentApi.deleteSubject(s.id);
     load();
   };
@@ -33,27 +35,25 @@ function Subjects() {
   return (
     <AdminShell>
       <div className="admin-crumbs">
-        <a onClick={() => navigate("/admin")}>المستويات</a> / المواد
+        <a onClick={() => navigate("/admin")}>{t("admin.bcLevels")}</a> / {t("admin.subjects")}
       </div>
-      <div className="admin-head"><h2>مواد المستوى</h2></div>
-
+      <div className="admin-head"><h2>{t("admin.levelSubjects")}</h2></div>
       <form className="admin-inline-form" onSubmit={add}>
-        <input className="grow" placeholder="اسم مادة جديدة" value={name} onChange={(e) => setName(e.target.value)} />
-        <button className="primary-btn" type="submit">+ إضافة مادة</button>
+        <input className="grow" placeholder={t("admin.newSubject")} value={name} onChange={(e) => setName(e.target.value)} />
+        <button className="primary-btn" type="submit">{t("admin.addSubject")}</button>
       </form>
-
       <div className="admin-grid">
         {subjects.map((s) => (
           <div className="admin-item" key={s.id}>
             <span className="ai-title" onClick={() => navigate(`/admin/subjects/${s.id}`)}>📖 {s.name}</span>
             <div className="ai-actions">
-              <button className="ai-edit" onClick={() => navigate(`/admin/subjects/${s.id}`)}>المصادر</button>
-              <button className="ai-edit" onClick={() => edit(s)}>تعديل</button>
-              <button className="ai-del" onClick={() => del(s)}>حذف</button>
+              <button className="ai-edit" onClick={() => navigate(`/admin/subjects/${s.id}`)}>{t("admin.resources")}</button>
+              <button className="ai-edit" onClick={() => edit(s)}>{t("common.edit")}</button>
+              <button className="ai-del" onClick={() => del(s)}>{t("common.delete")}</button>
             </div>
           </div>
         ))}
-        {subjects.length === 0 && <p className="panel-loading">لا توجد مواد بعد</p>}
+        {subjects.length === 0 && <p className="panel-loading">{t("admin.noSubjects")}</p>}
       </div>
     </AdminShell>
   );

@@ -114,6 +114,89 @@
 .save-row { display: flex; align-items: center; gap: 14px; }
 .saved-note { color: #15803d; font-weight: 800; font-size: 13px; }
 
+/* ============ DARK THEME ============ */
+html.dark {
+  --blue-soft: #15314a;
+  --text: #e2e8f0;
+  --muted: #94a3b8;
+  --line: #334155;
+  --card: #1e293b;
+  --bg: #0f172a;
+  --shadow: 0 18px 42px rgba(0, 0, 0, 0.45);
+}
+html.dark body,
+html.dark .app-shell { background: #0f172a; color: #e2e8f0; }
+
+/* header + chrome */
+html.dark .site-header { background: rgba(15, 23, 42, 0.92); border-bottom-color: #1e293b; }
+html.dark .main-nav, html.dark .main-nav button { color: #cbd5e1; }
+html.dark .back-btn { background: #1e293b; color: #cbd5e1; border-color: #334155; }
+html.dark .dashboard-shell { background: #0b1220; }
+html.dark .dash-menu-pill { background: #1e293b; color: #e2e8f0; }
+html.dark .dash-menu-pill button { color: #94a3b8; }
+html.dark .dash-search { background: #1e293b; }
+html.dark .dash-search input { color: #e2e8f0; }
+html.dark .dash-welcome p { color: #7fd4a0; }
+html.dark .profile-chip { color: #cbd5e1; }
+html.dark .dash-tabs { background: #1e293b; }
+html.dark .dash-tabs button { background: #1e293b; color: #cbd5e1; }
+html.dark .dash-tabs button.active { background: var(--blue); color: #fff; }
+
+/* cards / panels */
+html.dark .level-card { background: #1e293b; color: #e2e8f0; }
+html.dark .level-card strong { color: #e2e8f0; }
+html.dark .timeline-panel,
+html.dark .resources-panel,
+html.dark .tasks-panel,
+html.dark .analytics-panel { background: #1e293b; }
+html.dark .timeline-panel h2, html.dark .resources-panel h2,
+html.dark .tasks-panel h2, html.dark .analytics-panel h2,
+html.dark .panel-title, html.dark .detail-head h1, html.dark .res-main h2 { color: #e2e8f0; }
+html.dark .timeline-row { border-bottom-color: #334155; }
+html.dark .task-card { background: #0f1d33; border-color: #2b3c52; }
+html.dark .task-card p { color: #94a3b8; }
+html.dark .stat-card, html.dark .mini-stat, html.dark .upcoming-item,
+html.dark .res-card, html.dark .admin-item, html.dark .res-row,
+html.dark .detail-panel, html.dark .profile-panel, html.dark .dash-grid .panel { background: #1e293b; border-color: #334155; }
+html.dark .res-card .rc-title, html.dark .stat-card strong { color: #e2e8f0; }
+html.dark .res-card:hover { border-color: var(--blue); }
+html.dark .subject-pill { background: #0f1d33; color: #cbd5e1; border-color: #2b3c52; }
+html.dark .res-cat-tab { background: #0f1d33; color: #cbd5e1; border-color: #2b3c52; }
+
+/* forms */
+html.dark .task-form input, html.dark .task-form textarea, html.dark .task-form select,
+html.dark .filter-bar input, html.dark .filter-bar select,
+html.dark .field input, html.dark .field select,
+html.dark .admin-inline-form input, html.dark .admin-inline-form select,
+html.dark .subtask-add input, html.dark .login-form input,
+html.dark .form-group input, html.dark .form-group textarea,
+html.dark .tasks-toolbar select {
+  background: #0f1d33; color: #e2e8f0; border-color: #334155;
+}
+html.dark .login-form input { background: transparent; }
+
+/* notifications */
+html.dark .notif-panel { background: #1e293b; border-color: #334155; }
+html.dark .notif-head { background: #1e293b; border-bottom-color: #334155; }
+html.dark .notif-head strong { color: #e2e8f0; }
+html.dark .notif-item { border-bottom-color: #2b3c52; }
+html.dark .notif-item:hover { background: #0f1d33; }
+html.dark .notif-item.unread { background: #16263c; }
+html.dark .notif-body p { color: #e2e8f0; }
+
+/* public pages */
+html.dark .home-hero { background: #0f172a; }
+html.dark .features-section { background: linear-gradient(#0b1220, #0f172a); }
+html.dark .feature-card { background: #1e293b; }
+html.dark .feature-card p { color: #cbd5e1; }
+html.dark .hero-text { color: #cbd5e1; }
+html.dark .section-title, html.dark .about-text p { color: #e2e8f0; }
+html.dark .login-form-wrap, html.dark .detail-desc { color: #e2e8f0; }
+html.dark .admin-shell { background: #0b1220; }
+
+/* theme toggle button in dash-top */
+.round-icon.theme { background: #6b7e93; }
+
 /* ---- student resources page ---- */
 .res-layout { display: grid; grid-template-columns: 240px 1fr; gap: 26px; align-items: start; }
 .subjects-rail { display: flex; flex-direction: column; gap: 10px; }

@@ -24,7 +24,9 @@ export const adminToken = {
   clear: () => sessionStorage.removeItem(ADMIN),
 };
 
-const baseURL = "/api";
+// In dev with a local backend, leave VITE_API_URL unset to use the Vite proxy ("/api").
+// To hit a remote backend (Render) or in production (Vercel), set VITE_API_URL.
+const baseURL = import.meta.env.VITE_API_URL || "/api";
 const api = axios.create({ baseURL });
 
 api.interceptors.request.use((config) => {

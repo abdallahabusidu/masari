@@ -1,8 +1,10 @@
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import PublicHeader from "../components/PublicHeader.jsx";
 
 export default function About() {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   return (
     <>
       <PublicHeader active="about" />
@@ -13,15 +15,10 @@ export default function About() {
               <img src="/assets/images/about-laptop.png" alt="Student using laptop" />
             </div>
             <div className="about-text">
-              <h2>من نحن</h2>
-              <p>
-                نسعى في مساري إلى تمكين طلاب الجامعات عبر توفير بيئة رقمية متكاملة لتنظيم العمل
-                التعليمي بأسلوب حديث وفعال. توفر المنصة أدوات ذكية لإدارة المهام وجدولة الموارد
-                التعليمية ومتابعة السنوات الدراسية، مما يضمن تجربة تعلم مخصصة وشاملة تهدف إلى تحقيق
-                أفضل درجات الإنجاز والتميز.
-              </p>
+              <h2>{t("about.title")}</h2>
+              <p>{t("about.body")}</p>
               <div className="dashed-action">
-                <button className="primary-btn" onClick={() => navigate("/login")}>سجل الآن</button>
+                <button className="primary-btn" onClick={() => navigate("/login")}>{t("about.registerNow")}</button>
               </div>
             </div>
           </div>

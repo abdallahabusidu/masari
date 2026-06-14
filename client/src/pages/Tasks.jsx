@@ -1,5 +1,6 @@
 import { useEffect, useState, useCallback } from "react";
 import { useSearchParams } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { apiGet, apiPost, apiPatch, apiDelete } from "../lib/api.js";
 import DashboardChrome from "../components/DashboardChrome.jsx";
 import TaskCard from "../components/TaskCard.jsx";
@@ -8,6 +9,7 @@ const emptyForm = { title: "", course: "", deadline: "", priority: "medium", des
 const PRIORITY_RANK = { high: 0, medium: 1, low: 2 };
 
 export default function Tasks() {
+  const { t } = useTranslation();
   const [searchParams, setSearchParams] = useSearchParams();
   const [tasks, setTasks] = useState([]);
   const [form, setForm] = useState(emptyForm);
@@ -27,10 +29,7 @@ export default function Tasks() {
     if (filters.status) params.status = filters.status;
     if (filters.course) params.course = filters.course;
     if (filters.search) params.search = filters.search;
-    apiGet("/tasks", { params }).then((d) => {
-      setTasks(d.tasks);
-      setSelected([]);
-    });
+    apiGet("/tasks", { params }).then((d) => { setTasks(d.tasks); setSelected([]); });
   }, [filters]);
 
   useEffect(() => { load(); }, [load]);
@@ -60,7 +59,7 @@ export default function Tasks() {
       setForm(emptyForm);
       load();
     } catch (err) {
-      setError(err.response?.data?.message || "تعذر إضافة المهمة");
+      setError(err.response?.data?.message || t("tasks.addFail"));
     }
   };
 
@@ -69,23 +68,23 @@ export default function Tasks() {
     load();
   };
   const remove = async (task) => {
-    if (!confirm(`حذف المهمة "${task.title}"؟`)) return;
+    if (!confirm(`${t("common.delete")} "${task.title}"؟`)) return;
     await apiDelete(`/tasks/${task.id}`);
     load();
   };
 
   const toggleSelect = (id) => setSelected((s) => (s.includes(id) ? s.filter((x) => x !== id) : [...s, id]));
   const allSelected = sorted.length > 0 && selected.length === sorted.length;
-  const toggleSelectAll = () => setSelected(allSelected ? [] : sorted.map((t) => t.id));
+  const toggleSelectAll = () => setSelected(allSelected ? [] : sorted.map((t2) => t2.id));
   const bulkComplete = async () => {
     await Promise.all(selected.map((id) => {
-      const t = tasks.find((x) => x.id === id);
-      return t && t.status !== "completed" ? apiPatch(`/tasks/${id}/status`, { status: "completed" }) : null;
+      const tk = tasks.find((x) => x.id === id);
+      return tk && tk.status !== "completed" ? apiPatch(`/tasks/${id}/status`, { status: "completed" }) : null;
     }));
     load();
   };
   const bulkDelete = async () => {
-    if (!confirm(`حذف ${selected.length} مهمة؟`)) return;
+    if (!confirm(`${t("common.delete")} ${selected.length}؟`)) return;
     await Promise.all(selected.map((id) => apiDelete(`/tasks/${id}`)));
     load();
   };
@@ -93,68 +92,68 @@ export default function Tasks() {
   return (
     <DashboardChrome activeTab="tasks">
       <section className="tasks-panel">
-        <h2>إدارة المهام الأكاديمية</h2>
+        <h2>{t("tasks.title")}</h2>
         {error && <div className="alert-error">{error}</div>}
 
         <form className="task-form" onSubmit={addTask}>
-          <input placeholder="عنوان المهمة" required value={form.title} onChange={set("title")} />
-          <input placeholder="اسم المادة" value={form.course} onChange={set("course")} />
+          <input placeholder={t("tasks.taskTitle")} required value={form.title} onChange={set("title")} />
+          <input placeholder={t("tasks.course")} value={form.course} onChange={set("course")} />
           <input type="date" required value={form.deadline} onChange={set("deadline")} />
           <select value={form.priority} onChange={set("priority")}>
-            <option value="high">أولوية عالية</option>
-            <option value="medium">أولوية متوسطة</option>
-            <option value="low">أولوية منخفضة</option>
+            <option value="high">{t("tasks.pHigh")}</option>
+            <option value="medium">{t("tasks.pMedium")}</option>
+            <option value="low">{t("tasks.pLow")}</option>
           </select>
-          <textarea placeholder="وصف المهمة" value={form.description} onChange={set("description")} />
-          <button className="primary-btn" type="submit">إضافة مهمة جديدة</button>
+          <textarea placeholder={t("tasks.desc")} value={form.description} onChange={set("description")} />
+          <button className="primary-btn" type="submit">{t("tasks.addNew")}</button>
         </form>
 
         <div className="filter-bar">
-          <input placeholder="بحث..." value={filters.search} onChange={setFilter("search")} />
-          <input placeholder="المادة" value={filters.course} onChange={setFilter("course")} />
+          <input placeholder={t("tasks.fSearch")} value={filters.search} onChange={setFilter("search")} />
+          <input placeholder={t("tasks.fCourse")} value={filters.course} onChange={setFilter("course")} />
           <select value={filters.priority} onChange={setFilter("priority")}>
-            <option value="">كل الأولويات</option>
-            <option value="high">عالية</option>
-            <option value="medium">متوسطة</option>
-            <option value="low">منخفضة</option>
+            <option value="">{t("tasks.allPriorities")}</option>
+            <option value="high">{t("priority.high")}</option>
+            <option value="medium">{t("priority.medium")}</option>
+            <option value="low">{t("priority.low")}</option>
           </select>
           <select value={filters.status} onChange={setFilter("status")}>
-            <option value="">كل الحالات</option>
-            <option value="pending">قيد المتابعة</option>
-            <option value="in_progress">قيد التنفيذ</option>
-            <option value="completed">مكتملة</option>
+            <option value="">{t("tasks.allStatuses")}</option>
+            <option value="pending">{t("status.pending")}</option>
+            <option value="in_progress">{t("status.in_progress")}</option>
+            <option value="completed">{t("status.completed")}</option>
           </select>
         </div>
 
         <div className="tasks-toolbar">
           <label className="select-all">
-            <input type="checkbox" checked={allSelected} onChange={toggleSelectAll} /> تحديد الكل
+            <input type="checkbox" checked={allSelected} onChange={toggleSelectAll} /> {t("tasks.selectAll")}
           </label>
           <div className="sort-wrap">
-            <span>ترتيب حسب:</span>
+            <span>{t("tasks.sortBy")}</span>
             <select value={sort} onChange={(e) => setSort(e.target.value)}>
-              <option value="deadline">الموعد النهائي</option>
-              <option value="priority">الأولوية</option>
-              <option value="created">الأحدث</option>
+              <option value="deadline">{t("tasks.sDeadline")}</option>
+              <option value="priority">{t("tasks.sPriority")}</option>
+              <option value="created">{t("tasks.sNewest")}</option>
             </select>
           </div>
           {selected.length > 0 && (
             <div className="bulk-actions">
-              <span>{selected.length} محددة</span>
-              <button className="done-btn" onClick={bulkComplete}>إنجاز</button>
-              <button className="delete-btn" onClick={bulkDelete}>حذف</button>
+              <span>{selected.length} {t("tasks.selected")}</span>
+              <button className="done-btn" onClick={bulkComplete}>{t("tasks.done")}</button>
+              <button className="delete-btn" onClick={bulkDelete}>{t("common.delete")}</button>
             </div>
           )}
         </div>
 
         <div className="task-list">
           {sorted.length === 0 ? (
-            <p className="panel-loading">لا توجد مهام مطابقة</p>
+            <p className="panel-loading">{t("tasks.noMatch")}</p>
           ) : (
-            sorted.map((t) => (
-              <div className="task-row" key={t.id}>
-                <input type="checkbox" className="task-select" checked={selected.includes(t.id)} onChange={() => toggleSelect(t.id)} />
-                <div className="task-row-card"><TaskCard task={t} onToggle={toggle} onDelete={remove} /></div>
+            sorted.map((tk) => (
+              <div className="task-row" key={tk.id}>
+                <input type="checkbox" className="task-select" checked={selected.includes(tk.id)} onChange={() => toggleSelect(tk.id)} />
+                <div className="task-row-card"><TaskCard task={tk} onToggle={toggle} onDelete={remove} /></div>
               </div>
             ))
           )}

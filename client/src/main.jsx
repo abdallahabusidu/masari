@@ -4,6 +4,8 @@ import { BrowserRouter } from "react-router-dom";
 
 import App from "./App.jsx";
 import { AuthProvider } from "./context/AuthContext.jsx";
+import "./lib/i18n.js"; // init i18n + apply saved language/direction
+import "./lib/theme.js"; // apply saved theme
 import "./styles/legacy.css";
 import "./styles/app.css";
 

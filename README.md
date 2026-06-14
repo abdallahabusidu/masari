@@ -57,12 +57,24 @@ Demo login: `student@masari.edu` / `masari123`
 
 **client:** `VITE_API_URL`, `VITE_SOCKET_URL`
 
-## Deployment
+## Deployment (Vercel + Render + Atlas)
 
-- **Frontend** → Vercel (build `client/`, set `VITE_API_URL`/`VITE_SOCKET_URL`).
-- **Backend** → Render/Heroku (deploy `server/`, set env vars).
-- **Database** → MongoDB Atlas (set `MONGO_URI`).
+**Backend → Render** (`server/`)
+- Root directory: `server`, build: `npm install`, start: `npm start` (Render injects `PORT`).
+- Env vars: `MONGO_URI`, `JWT_ACCESS_SECRET`, `JWT_REFRESH_SECRET`, `ADMIN_PASSWORD`, and
+  `CLIENT_ORIGIN` = your local + Vercel origins, comma-separated, e.g.
+  `http://localhost:5173,https://your-app.vercel.app`.
+- Free tier spins down when idle; the first request after idle can take ~30–50s (cold start).
 
-## Build status
+**Frontend → Vercel** (`client/`)
+- Root directory: `client` (a `vercel.json` adds SPA rewrites; framework auto-detected as Vite).
+- Env var: `VITE_API_URL` = `https://<your-render-app>.onrender.com/api`
+  (and `VITE_SOCKET_URL` = the Render origin, for future real-time).
+- After deploy, add the Vercel domain to the backend's `CLIENT_ORIGIN`.
 
-This project is being built in phases (see the build contract). Current: **Phase 1 — Auth** complete.
+**Database → MongoDB Atlas** — set `MONGO_URI`; run `npm run seed` once to load demo data.
+
+### Local dev pointing at a remote backend
+`client/.env` with `VITE_API_URL=https://<app>.onrender.com/api` makes `npm run dev` call the
+remote API directly (the Vite proxy is only used when `VITE_API_URL` is unset). Restart the dev
+server after changing `.env`.
