@@ -1,0 +1,25 @@
+services:
+  mongo:
+    image: mongo:7
+    container_name: masari-mongo
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    volumes:
+      - masari_mongo_data:/data/db
+
+  server:
+    build: ./server
+    container_name: masari-server
+    restart: unless-stopped
+    depends_on:
+      - mongo
+    environment:
+      - PORT=5050
+      - MONGO_URI=mongodb://mongo:27017/masari
+      - CLIENT_ORIGIN=http://localhost:5173
+    ports:
+      - "5050:5050"
+
+volumes:
+  masari_mongo_data:
