@@ -2,10 +2,8 @@
 
 Full-stack implementation of the Masari platform described in `req.docx`.
 
-- **client/** — React 18 + Vite (RTL Arabic), React Router, Axios, FullCalendar, Recharts. Styling reuses the original prototype's `css/style.css` (copied to `client/src/styles/legacy.css`) so the UI matches the native design exactly.
+- **client/** — React 18 + Vite (RTL Arabic), React Router, Axios, FullCalendar, Recharts. Styling reuses the original prototype's CSS (ported to `client/src/styles/legacy.css`) so the UI matches the native design exactly.
 - **server/** — Node.js + Express + MongoDB (Mongoose), JWT auth, bcrypt, Zod validation
-
-The original static prototype (`index.html`, `css/`, `js/`) is kept at the repo root as the visual design reference.
 
 ## MVP scope
 
